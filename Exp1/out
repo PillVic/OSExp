@@ -1,0 +1,9 @@
+/etc/brltty/Contraction/ko.ctb
+/etc/brltty/Contraction/zh-tw.ctb
+/etc/brltty/Contraction/zh-tw-ucb.ctb
+/etc/ssl/certs/ca-certificates.crt
+/etc/ssh/moduli
+/etc/apparmor.d/cache/usr.bin.evince
+/etc/apparmor.d/cache/usr.bin.webbrowser-app
+/etc/ImageMagick-6/mime.xml
+8
