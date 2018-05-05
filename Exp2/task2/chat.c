@@ -1,11 +1,17 @@
+/*
+ * 通过使用消息队列实现父子进程之间的消息通信
+ * 相互发送消息，接收消息
+ */
 #include<stdio.h>
 #include<sys/types.h>
 #include<unistd.h>
 #include<stdlib.h>
 #include<sys/ipc.h>
 #include<sys/msg.h>
+#include<sys/wait.h>
 
 #define LEN 100
+#define CHATTIME  10
 
 typedef struct{
     long int messageType;
@@ -28,28 +34,22 @@ int main(){
     if((id=fork())==0){
 	//Child Process
 	chat("Child", msgChild, &ChildData );
-	exit(0);
     }else{
 	//Father Process
 	chat("Father", msgFather, &FatherData);
-//	printf("Father Process Created..\n");
-//	while(1){
-//	    char msg[100]; 
-//	    printf("Father: ");
-//	    scanf("%s",msg);
-//	    printf("\n");
-//	}
-	exit(0);
     }
+    wait(0);
     return 0;
 }
 void chat(char PName[],int msgId, message *data){
 	printf("%s Process Created..\n", PName);
-	char msg[100];
-	while(1){
+	int time=CHATTIME;
+	while(time--){
 	    char msg[100];
 	    printf("%s:  ", PName);
-	    scanf("%s",msg);
-	    printf("\n");
+	    //读取整行输入，使得能够允许输入空格
+	    fgets(msg,LEN,stdin);
+	    printf("%s : %d Setence \n",PName, 10-time);
 	}
+	printf("Process %s exit...\n",PName);
 }
