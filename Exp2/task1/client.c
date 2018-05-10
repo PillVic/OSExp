@@ -6,44 +6,35 @@
 #include<sys/stat.h>
 #include<sys/types.h>
 
-//#define ERR_EXIT(m) \
-//    do{\
-//	perror(m);\
-//	exit(EXIT_FAILURE);\
-//    }while(0)
-
-#define LEN 1024
-
+#define LEN 64
 void ERR_EXIT(char *m){
-    do{
-	perror(m);
-	exit(EXIT_FAILURE);
-    }while(0);
+    perror(m);
+    exit(EXIT_FAILURE);
 }
+
 int main(){
-    umask(0);
-    if(mkfifo("mypipe",0644)<0){
-	ERR_EXIT("mypipe");
-    }
-    int rfd = open("mypipe", O_RDONLY);
-    if(rfd < 0){
+    int wfd = open("mypipe", O_WRONLY);
+    if(wfd < 0){
 	ERR_EXIT("open");
     }
     char buf[LEN];
     while(1){
 	buf[0] = 0;
-	printf("Please wait...\n");
-	ssize_t s = read(rfd, buf, sizeof(buf)-1);
-	if(s >0){
-	    buf[s-1] = 0;
-	    printf("[client]: %s\n", buf);
-	}else if(s == 0){
-	    printf("client quit, exit now!\n");
-	    exit(EXIT_SUCCESS);
-	}else{
+	printf("Please input:  ");
+	fflush(stdout);
+	if(fgets(buf,LEN, stdin)!=NULL){
+	    fflush(stdin);
+	    write(wfd, buf, strlen(buf));
+	    if(strcmp(buf,"end\n")==0){
+		break;
+	    }
+
+	}else {
 	    ERR_EXIT("read");
+	    break;
 	}
     }
-    close(rfd);
+    close(wfd);
     return 0;
 }
+
