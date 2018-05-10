@@ -63,18 +63,22 @@ void chat(char PName[],int getId, message *readP,int sendId, message * writeP){
 	    }
 	    printf("%s [GET]:  %s", PName, (*readP).data); 
 	    fflush(stdout);
+	    if(strcmp((*readP).data,"end\n")==0){
+		//set end flag
+		break;
+	    }
 	    //get a line as inputed string  including space
 	    printf("%s [SEND]: ", PName);
 	    fflush(stdout);
 	    fgets((*writeP).data,LEN,stdin);
-	    if(strcmp((*writeP).data,"end\n")==0){
-		//set end flag
-		break;
-	    }
 	    if((msgsnd(sendId, (void*)writeP, sizeof(message), 0))<0){
 		//send the message
 		printf("message posted error\n");
 		exit(1);
+	    }
+	    if(strcmp((*writeP).data,"end\n")==0){
+		//set end flag
+		break;
 	    }
 	    time--;
 	}
