@@ -1,55 +1,82 @@
-/*
- * 通过使用消息队列实现父子进程之间的消息通信
- * 相互发送消息，接收消息
+/* * 通过使用消息队列实现父子进程之间的消息通信 * 相互发送消息，接收消息
  */
 #include<stdio.h>
 #include<sys/types.h>
-#include<unistd.h>
 #include<stdlib.h>
 #include<sys/ipc.h>
 #include<sys/msg.h>
 #include<sys/wait.h>
+#include<string.h>
+#include<unistd.h>
 
-#define LEN 100
-#define CHATTIME  10
+#define LEN 128
+#define CHATTIME  5
 
 typedef struct{
     long int messageType;
     char data[LEN];
 }message;
 
-void chat(char Pname[],int msgId, message *data);
+void chat(char Pname[],int getId, message *read, int sendId, message *write);
 
 int main(){
-    pid_t id;
+    int id;
     //Build message queue
     int msgChild,msgFather;
     msgChild=msgget((key_t)1234,0666|IPC_CREAT);
     msgFather=msgget((key_t)1234,0666|IPC_CREAT);
-    message ChildData,FatherData;
     if(msgChild==-1||msgFather==-1){
 	printf("msgget failed\n");
 	exit(EXIT_FAILURE);
     }
+    message ChildData,FatherData;
+    
+    ChildData.messageType = 1;
+    FatherData.messageType = 1;
+
+    strcpy(FatherData.data,"START\n");
+    if(msgsnd(msgFather, (void*)&FatherData,sizeof(message), 0)){
+	printf("message send error!\n");
+    }
+//  strcpy(ChildData.data,"START\n");
+//  if(msgsnd(msgChild, (void*)&ChildData,sizeof(message), 0)){
+//	printf("message send error!\n");
+//    }
+
     if((id=fork())==0){
 	//Child Process
-	chat("Child", msgChild, &ChildData );
+	chat("Child", msgChild, &ChildData,msgFather, &FatherData);
     }else{
 	//Father Process
-	chat("Father", msgFather, &FatherData);
+	chat("Father", msgFather, &FatherData,msgChild,&ChildData);
     }
     wait(0);
     return 0;
 }
-void chat(char PName[],int msgId, message *data){
-	printf("%s Process Created..\n", PName);
-	int time=CHATTIME;
-	while(time--){
-	    char msg[100];
-	    printf("%s:  ", PName);
-	    //读取整行输入，使得能够允许输入空格
-	    fgets(msg,LEN,stdin);
-	    printf("%s : %d Setence \n",PName, 10-time);
+void chat(char PName[],int getId, message *readP,int sendId, message * writeP){
+	int time = CHATTIME;
+	while(time){
+	    if(msgrcv(getId, readP,sizeof(message),1,0) < 0 ){
+		//get the message
+		perror("msgrc");
+		exit(1);
+	    }
+	    printf("%s [GET]:  %s", PName, (*readP).data); 
+	    fflush(stdout);
+	    //get a line as inputed string  including space
+	    printf("%s [SEND]: ", PName);
+	    fflush(stdout);
+	    fgets((*writeP).data,LEN,stdin);
+	    if(strcmp((*writeP).data,"end\n")==0){
+		//set end flag
+		break;
+	    }
+	    if((msgsnd(sendId, (void*)writeP, sizeof(message), 0))<0){
+		//send the message
+		printf("message posted error\n");
+		exit(1);
+	    }
+	    time--;
 	}
 	printf("Process %s exit...\n",PName);
 }
