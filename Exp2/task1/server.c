@@ -38,5 +38,6 @@ int main(){
 	}
     }
     close(rfd);
+    unlink("mkpipe");
     return 0;
 }

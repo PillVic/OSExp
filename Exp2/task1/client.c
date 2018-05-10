@@ -35,6 +35,7 @@ int main(){
 	}
     }
     close(wfd);
+    unlink("mypipe");
     return 0;
 }
 
