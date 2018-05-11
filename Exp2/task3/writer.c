@@ -10,7 +10,7 @@
 
 int main(){
     //Initial 
-    int shmid = shmget((key_t)1234, sizeof(block), 0666|IPC_CREAT);
+    int shmid = shmget((key_t)ID, sizeof(block), 0666|IPC_CREAT);
     if(shmid==-1){
 	perror("shmget error!\n");
 	exit(EXIT_FAILURE);
