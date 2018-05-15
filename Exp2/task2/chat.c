@@ -38,10 +38,6 @@ int main(){
     if(msgsnd(msgFather, (void*)&FatherData,sizeof(message), 0)){
 	printf("message send error!\n");
     }
-//  strcpy(ChildData.data,"START\n");
-//  if(msgsnd(msgChild, (void*)&ChildData,sizeof(message), 0)){
-//	printf("message send error!\n");
-//    }
 
     if((id=fork())==0){
 	//Child Process
