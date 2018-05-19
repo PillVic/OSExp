@@ -48,7 +48,7 @@ int main(){
 		perror("Thread Create Error.\n");
 		exit(EXIT_FAILURE);
 	    }
-	    continue;
+	    pthread_join(checkId,NULL);
 	}
 	printf("Array [%d]: %.0lf\n",index, arr[index-1]);
     }
@@ -73,7 +73,6 @@ void* childThread(void *arg){
 void* checkThread(void *arg){
     while(*(int*)arg>length);
     int index = *(int*)arg;
-    printf("Array [%d]: %.0lf\n",index, arr[index-1]);
     pthread_exit(NULL);
     return ((void*)0);
 }
