@@ -81,7 +81,7 @@ void chat(char PName[],int getId, message *readP,int sendId, message * writeP){
 	    }
 	    time--;
 	}
-	printf("Process %s exit...\n",PName);
+	printf("Thread %s exit...\n",PName);
 }
 void* childThread(void* arg){
     chat("Child", msgChild, &ChildData,msgFather, &FatherData);

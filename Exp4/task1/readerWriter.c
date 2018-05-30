@@ -35,6 +35,7 @@ int main(){
 	printf("[%d]: %.0f \n",index,arr[index]);
 	index++;
     }
+    sem_destroy(&s);
     return 0;
 }
 void* childThread(void *arg){
