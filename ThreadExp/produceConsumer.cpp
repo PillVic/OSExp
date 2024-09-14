@@ -5,7 +5,7 @@
 using namespace std;
 /* 经典多线程问题: 生产者消费者问题
  * */
-#define LOOPNUM  100
+#define LOOPNUM  10
 
 int main(void){
     ios::sync_with_stdio(false);
@@ -15,7 +15,7 @@ int main(void){
     const int bufferNum = 10;
 
     counting_semaphore<1> mutex(1);
-    counting_semaphore<1> empty(bufferNum);
+    counting_semaphore<bufferNum> empty(bufferNum);
     counting_semaphore<1> full(0);
 
     
