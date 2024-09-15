@@ -58,5 +58,10 @@ int main(void) {
     for (auto& t : threads) {
         t.join();
     }
+
+    // 使用完需要销毁信号量(信号量在系统内核中)
+    for (int i = 0; i < THINKER_NUM; i++) {
+        sem_destroy(chopsticks + i);
+    }
     return 0;
 }
