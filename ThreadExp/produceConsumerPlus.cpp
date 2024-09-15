@@ -1,4 +1,4 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 
 using namespace std;
 /*复杂生产者消费者问题:
@@ -9,19 +9,20 @@ using namespace std;
 
 #define LOOPNUM 100
 
-int main(void){
+int main(void) {
     ios::sync_with_stdio(false);
-    cin.tie(0); cout.tie(0);
-    
+    cin.tie(0);
+    cout.tie(0);
+
     counting_semaphore<1> empty(1);
     counting_semaphore<1> full(0);
     counting_semaphore<1> apple(0);
     counting_semaphore<1> orange(0);
 
-    thread mother([&empty, &orange]{
-        for(int i=0;i<LOOPNUM;i++){
+    thread mother([&empty, &orange] {
+        for (int i = 0; i < LOOPNUM; i++) {
             empty.acquire();
-            
+
             string s = format("[mother]:put an orange.\n");
             cout << s;
 
@@ -29,8 +30,8 @@ int main(void){
         }
     });
 
-    thread father([&full, &empty, &apple]{
-        for(int i=0;i<LOOPNUM;i++){
+    thread father([&full, &empty, &apple] {
+        for (int i = 0; i < LOOPNUM; i++) {
             empty.acquire();
 
             string s = format("[father]:put an apple.\n");
@@ -40,8 +41,8 @@ int main(void){
         }
     });
 
-    thread son([&empty, &orange]{
-        for(int i=0;i<LOOPNUM;i++){
+    thread son([&empty, &orange] {
+        for (int i = 0; i < LOOPNUM; i++) {
             orange.acquire();
 
             string s = "[son]:eat an orange.\n";
@@ -51,8 +52,8 @@ int main(void){
         }
     });
 
-    thread daughter([&full, &empty, &apple]{
-        for(int i=0;i<LOOPNUM;i++){
+    thread daughter([&full, &empty, &apple] {
+        for (int i = 0; i < LOOPNUM; i++) {
             apple.acquire();
 
             string s = "[daughter]:eat an apple.\n";

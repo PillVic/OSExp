@@ -1,15 +1,14 @@
-#include<bits/stdc++.h>
-#include<thread>
-#include<semaphore>
+#include <bits/stdc++.h>
 
 using namespace std;
 /* 经典多线程问题: 生产者消费者问题
  * */
-#define LOOPNUM  10
+#define LOOPNUM 10
 
-int main(void){
+int main(void) {
     ios::sync_with_stdio(false);
-    cin.tie(0); cout.tie(0);
+    cin.tie(0);
+    cout.tie(0);
 
     int itemNum = 0;
     const int bufferNum = 10;
@@ -18,9 +17,8 @@ int main(void){
     counting_semaphore<bufferNum> empty(bufferNum);
     counting_semaphore<1> full(0);
 
-    
-    thread producer([&mutex, &empty, &full, &itemNum]{
-        for(int i=0;i<LOOPNUM;i++){
+    thread producer([&mutex, &empty, &full, &itemNum] {
+        for (int i = 0; i < LOOPNUM; i++) {
             empty.acquire();
             mutex.acquire();
 
@@ -32,18 +30,18 @@ int main(void){
             full.release();
         }
     });
-    
-    thread consumer([&mutex, &empty, &full, &itemNum]{
-        for(int i=0;i<LOOPNUM;i++){
-           full.acquire();
-           mutex.acquire();
 
-           string s = format("[consumer]:{}-1.\n", itemNum);
-           itemNum--;
-           cout << s;
+    thread consumer([&mutex, &empty, &full, &itemNum] {
+        for (int i = 0; i < LOOPNUM; i++) {
+            full.acquire();
+            mutex.acquire();
 
-           mutex.release();
-           empty.release();
+            string s = format("[consumer]:{}-1.\n", itemNum);
+            itemNum--;
+            cout << s;
+
+            mutex.release();
+            empty.release();
         }
     });
 
