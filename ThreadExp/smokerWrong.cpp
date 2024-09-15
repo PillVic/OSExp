@@ -5,11 +5,11 @@
  * 每个吸烟者分别自带一种材料
  * 每次供应者将两种材料放到桌面上,拥有剩下一种材料的抽烟者卷烟并抽掉
  *
- * 此处为修改后的方案
+ * 此处为课本的方案(执行会发现有先吸烟后提供烟的错误)
  * */
 using namespace std;
 
-#define LOOPNUM 2000
+#define LOOPNUM 20
 
 int main(void) {
     ios::sync_with_stdio(false);
@@ -31,10 +31,6 @@ int main(void) {
     thread producer([&empty, &smoker1, &smoker2, &smoker3, &turns] {
         for (int i = 0; i < LOOPNUM * 3; i++) {
             int turn = turns[i];
-
-            string s = format("[producer]:prepared for smoker{}.", turn + 1);
-            cout << s;
-
             switch (turn) {
                 case 0:
                     smoker1.release();
@@ -46,6 +42,8 @@ int main(void) {
                     smoker3.release();
                     break;
             }
+            string s = format("[producer]:prepared for smoker{}.", turn + 1);
+            cout << s;
 
             empty.acquire();
         }
